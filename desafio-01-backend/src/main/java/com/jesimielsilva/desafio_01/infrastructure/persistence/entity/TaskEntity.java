@@ -22,14 +22,17 @@ public class TaskEntity {
     private Long id;
     private String title;
     private String description;
+
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
+
     @Column(name = "due_date")
     private LocalDate dueDate;
 
 
     public static TaskEntity fromDomain(Task task) {
         return new TaskEntity(
-                task.getId(),
+                task.getId() != null && task.getId() == 0 ? null : task.getId(),
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
