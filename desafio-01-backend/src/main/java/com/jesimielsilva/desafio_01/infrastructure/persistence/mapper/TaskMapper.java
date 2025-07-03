@@ -11,10 +11,10 @@ public class TaskMapper {
 
     public static Task toDomain(TaskDto taskDto) {
         return new Task(
-                taskDto.getId(),
+                null,
                 taskDto.getTitle(),
                 taskDto.getDescription(),
-                TaskStatus.PENDENTE,
+                TaskStatus.valueOf(taskDto.getStatus()),
                 taskDto.getDueDate()
         );
     }
@@ -44,7 +44,7 @@ public class TaskMapper {
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
-                TaskStatus.valueOf(String.valueOf(entity.getStatus())),
+                entity.getStatus(),
                 entity.getDueDate()
         );
     }
