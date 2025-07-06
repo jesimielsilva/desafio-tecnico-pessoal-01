@@ -1,6 +1,7 @@
 package com.jesimielsilva.desafio_01.infrastructure.controller;
 
 import com.jesimielsilva.desafio_01.application.usercases.CreateTaskUseCase;
+import com.jesimielsilva.desafio_01.application.usercases.FindTaskByIdUserCase;
 import com.jesimielsilva.desafio_01.application.usercases.ListTaskUseCase;
 import com.jesimielsilva.desafio_01.domain.model.Task;
 import com.jesimielsilva.desafio_01.infrastructure.controller.dto.TaskDto;
@@ -23,9 +24,14 @@ public class TaskController {
     @Autowired
     private final ListTaskUseCase listTaskUseCase;
 
-    public TaskController(CreateTaskUseCase createTaskUseCase, ListTaskUseCase listTaskUseCase) {
+    @Autowired
+    private final FindTaskByIdUserCase findTaskByIdUserCase;
+
+
+    public TaskController(CreateTaskUseCase createTaskUseCase, ListTaskUseCase listTaskUseCase, FindTaskByIdUserCase findTaskByIdUserCase) {
         this.createTaskUseCase = createTaskUseCase;
         this.listTaskUseCase = listTaskUseCase;
+        this.findTaskByIdUserCase = findTaskByIdUserCase;
     }
 
     @PostMapping("/save")
@@ -42,6 +48,13 @@ public class TaskController {
                 .map(TaskMapper::toResponseDto)
                 .toList();
         return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/list/{id}")
+    public ResponseEntity<TaskResponseDto> findById(@PathVariable Long id) {
+        Task task = findTaskByIdUserCase.execute(id);
+        TaskResponseDto dto = TaskMapper.toResponseDto(task);
+        return ResponseEntity.ok(dto);
     }
 
 }
