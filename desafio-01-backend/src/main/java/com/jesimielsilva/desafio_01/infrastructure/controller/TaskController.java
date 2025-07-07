@@ -1,6 +1,7 @@
 package com.jesimielsilva.desafio_01.infrastructure.controller;
 
 import com.jesimielsilva.desafio_01.application.usercases.CreateTaskUseCase;
+import com.jesimielsilva.desafio_01.application.usercases.DeleteTaskUseCase;
 import com.jesimielsilva.desafio_01.application.usercases.FindTaskByIdUserCase;
 import com.jesimielsilva.desafio_01.application.usercases.ListTaskUseCase;
 import com.jesimielsilva.desafio_01.domain.model.Task;
@@ -27,11 +28,14 @@ public class TaskController {
     @Autowired
     private final FindTaskByIdUserCase findTaskByIdUserCase;
 
+    private final DeleteTaskUseCase deleteTaskUseCase;
 
-    public TaskController(CreateTaskUseCase createTaskUseCase, ListTaskUseCase listTaskUseCase, FindTaskByIdUserCase findTaskByIdUserCase) {
+
+    public TaskController(CreateTaskUseCase createTaskUseCase, ListTaskUseCase listTaskUseCase, FindTaskByIdUserCase findTaskByIdUserCase, DeleteTaskUseCase deleteTaskUseCase) {
         this.createTaskUseCase = createTaskUseCase;
         this.listTaskUseCase = listTaskUseCase;
         this.findTaskByIdUserCase = findTaskByIdUserCase;
+        this.deleteTaskUseCase = deleteTaskUseCase;
     }
 
     @PostMapping("/save")
@@ -55,6 +59,12 @@ public class TaskController {
         Task task = findTaskByIdUserCase.execute(id);
         TaskResponseDto dto = TaskMapper.toResponseDto(task);
         return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        deleteTaskUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
